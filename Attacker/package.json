@@ -1,0 +1,15 @@
+{
+  "name": "attacker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "yarn build && node index.js",
+    "clean": "rm -rf node_modules && yarn"
+  },
+  "dependencies": {
+    "@types/node": "^12.0.2",
+    "typescript": "^3.4.5"
+  }
+}

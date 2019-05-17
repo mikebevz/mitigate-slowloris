@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  host-app:
+    build:
+      context: ./HostApp
+      dockerfile: Dockerfile
+    image: host-app
+    container_name: host-app
+    restart: unless-stopped
+    networks:
+      - app-network
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - /var/www/html
+      - ./HostApp/config/default_host.conf:/etc/nginx/conf.d/example.com.conf
+      - ./HostApp/config/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - host-app
+    networks:
+      - app-network
+  attacker:
+    build:
+      context: ./Attacker
+      dockerfile: Dockerfile
+    image: attacker-app
+    container_name: attacker-app
+    restart: unless-stopped
+    networks:
+      - app-network
+    environment:
+      - TARGET_HOST=webserver
+      - SOCKETS_NR=20000
+
+networks:
+  app-network:
+    driver: bridge
